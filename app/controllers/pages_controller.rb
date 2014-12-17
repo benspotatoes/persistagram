@@ -69,6 +69,7 @@ class PagesController < ApplicationController
       end
     end
 
+    current_user.user_metrics.create!(files_saved: metrics[:files_saved])
     Rails.logger.info("#{metrics[:files_saved]} files saved")
 
     current_user.last_sync = Time.now

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141217034757) do
+ActiveRecord::Schema.define(version: 20141217040400) do
 
   create_table "dropbox_connections", force: true do |t|
     t.integer  "user_id",      null: false
@@ -34,6 +34,15 @@ ActiveRecord::Schema.define(version: 20141217034757) do
   add_index "instagram_connections", ["access_token"], name: "index_instagram_connections_on_access_token", unique: true
   add_index "instagram_connections", ["user_id", "access_token"], name: "index_instagram_connections_on_user_id_and_access_token", unique: true
   add_index "instagram_connections", ["user_id"], name: "index_instagram_connections_on_user_id", unique: true
+
+  create_table "user_metrics", force: true do |t|
+    t.integer  "user_id",     null: false
+    t.integer  "files_saved", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_metrics", ["user_id"], name: "index_user_metrics_on_user_id"
 
   create_table "users", force: true do |t|
     t.datetime "created_at",                     null: false

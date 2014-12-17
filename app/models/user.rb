@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   include Clearance::User
 
+  has_many :user_metrics
+
   SYNC_LIMIT_DAYS = 7
 
   def can_sync?
