@@ -11,7 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141216011012) do
+ActiveRecord::Schema.define(version: 20141217003337) do
+
+  create_table "dropbox_connections", force: true do |t|
+    t.integer  "user_id",      null: false
+    t.string   "access_token", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "dropbox_connections", ["access_token"], name: "index_dropbox_connections_on_access_token", unique: true
+  add_index "dropbox_connections", ["user_id", "access_token"], name: "index_dropbox_connections_on_user_id_and_access_token", unique: true
+  add_index "dropbox_connections", ["user_id"], name: "index_dropbox_connections_on_user_id", unique: true
+
+  create_table "instagram_connections", force: true do |t|
+    t.integer  "user_id",      null: false
+    t.string   "access_token", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "instagram_connections", ["access_token"], name: "index_instagram_connections_on_access_token", unique: true
+  add_index "instagram_connections", ["user_id", "access_token"], name: "index_instagram_connections_on_user_id_and_access_token", unique: true
+  add_index "instagram_connections", ["user_id"], name: "index_instagram_connections_on_user_id", unique: true
 
   create_table "users", force: true do |t|
     t.datetime "created_at",                     null: false

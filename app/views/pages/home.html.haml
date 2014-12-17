@@ -1,0 +1,7 @@
+- if @ig_conn.nil?
+  %h1 Connect Your Instagram Account
+  = link_to 'Connect', ig_connect_path
+
+- if @db_conn.nil?
+  %h1 Connect Your Dropbox Account
+  = link_to 'Connect', db_connect_path
