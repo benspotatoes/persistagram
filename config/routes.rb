@@ -10,4 +10,6 @@ Rails.application.routes.draw do
     get 'connect' => 'dropbox#connect', as: 'db_connect'
     get 'callback' => 'dropbox#callback', as: 'db_callback'
   end
+
+  get 'sync' => 'pages#sync'
 end

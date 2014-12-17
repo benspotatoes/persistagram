@@ -5,3 +5,6 @@
 - if @db_conn.nil?
   %h1 Connect Your Dropbox Account
   = link_to 'Connect', db_connect_path
+
+- if @ig_conn.present? && @db_conn.present?
+  = link_to 'Save Likes', sync_path
