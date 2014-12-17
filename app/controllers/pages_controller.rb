@@ -15,6 +15,13 @@ class PagesController < ApplicationController
       return
     end
 
+    should_proceed, return_in = current_user.can_sync?
+    if !should_proceed
+      flash[:error] = "Cannot sync, try again in #{return_in} days"
+      redirect_to root_path
+      return
+    end
+
     metrics = {req_count: 1, files_saved: 0}
     likes = {}
     url = InstagramConnection.liked_photos_endpoint(access_token: @ig_conn.access_token)
@@ -63,6 +70,9 @@ class PagesController < ApplicationController
     end
 
     Rails.logger.info("#{metrics[:files_saved]} files saved")
+
+    current_user.last_sync = Time.now
+    current_user.save!
   end
 
   private
@@ -74,6 +84,6 @@ class PagesController < ApplicationController
   def set_db_conn
     require 'dropbox_sdk' if !defined?(DropboxClient)
     @db_conn = DropboxConnection.find_by(user_id: current_user.try(:id))
-    @db = DropboxClient.new(@db_conn.access_token)
+    @db = DropboxClient.new(@db_conn.access_token) if @db_conn
   end
 end
