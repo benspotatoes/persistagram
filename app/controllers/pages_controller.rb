@@ -57,9 +57,9 @@ class PagesController < ApplicationController
         item.match(/.*\/(\w*)\.(\w{3})/)
         filename = $1
         extension = $2
-        path = "/#{username}/#{filename}.#{extension}"
+        path = "/iglikes-#{current_user.id}/#{username}/#{filename}.#{extension}"
 
-        if @db.search("/#{username}", "#{filename}.#{extension}").empty?
+        if @db.search("/iglikes-#{current_user.id}/#{username}", "#{filename}.#{extension}").empty?
           Rails.logger.debug("Created file: #{username} - #{filename}.#{extension}")
           @db.put_file(path, open(item).read)
           metrics[:files_saved] += 1
