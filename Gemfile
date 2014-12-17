@@ -5,6 +5,7 @@ gem 'puma'
 gem 'faraday'
 gem 'instagram'
 gem 'dropbox-sdk'
+gem 'haml'
 
 gem 'rails', '4.1.8'
 gem 'sqlite3'
