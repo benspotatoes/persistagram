@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 gem 'clearance'
 gem 'puma'
+gem 'faraday'
+gem 'instagram'
+gem 'dropbox-sdk'
 
 gem 'rails', '4.1.8'
 gem 'sqlite3'
