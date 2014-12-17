@@ -1,0 +1,2 @@
+class DropboxController < ApplicationController
+end

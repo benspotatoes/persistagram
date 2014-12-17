@@ -1,0 +1,2 @@
+class InstagramController < ApplicationController
+end
