@@ -144,7 +144,7 @@ func save_source_to_dbox(author string, source string, client *dropbox.Dropbox) 
 }
 
 func main() {
-  ig_access_token, err := ioutil.ReadFile("/tmp/ig_access_token")
+  ig_access_token, err := ioutil.ReadFile("~/tmp/ig_access_token")
 
   var access_token string
   access_token = string(ig_access_token)
