@@ -1,0 +1,23 @@
+{
+	"ImportPath": "github.com/benspotatoes/iglikes",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/gedex/go-instagram/instagram",
+			"Comment": "0.5-2-gc11476d",
+			"Rev": "c11476d32b9f729c857d6752b10ac721b0aa353c"
+		},
+		{
+			"ImportPath": "github.com/stacktic/dropbox",
+			"Rev": "daee057d5b32f4c64cf56efa3ce5fb1a83ef8516"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "e0403b4e005737430c05a57aac078479844f919c"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2",
+			"Rev": "b5adcc2dcdf009d0391547edc6ecbaff889f5bb9"
+		}
+	]
+}
