@@ -1,23 +1,31 @@
 {
-	"ImportPath": "github.com/benspotatoes/iglikes",
-	"GoVersion": "go1.4.2",
+	"ImportPath": "github.com/benspotatoes/fulsome-corgi",
+	"GoVersion": "go1.5.2",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
-		{
-			"ImportPath": "github.com/gedex/go-instagram/instagram",
-			"Comment": "0.5-2-gc11476d",
-			"Rev": "c11476d32b9f729c857d6752b10ac721b0aa353c"
-		},
 		{
 			"ImportPath": "github.com/stacktic/dropbox",
 			"Rev": "daee057d5b32f4c64cf56efa3ce5fb1a83ef8516"
 		},
 		{
+			"ImportPath": "github.com/tanookiben/go-instagram/instagram",
+			"Comment": "0.5-3-g3137500",
+			"Rev": "31375005eb8d9d1a4aaae252ad85895c0c53f55c"
+		},
+		{
+			"ImportPath": "github.com/zenazn/goji",
+			"Comment": "v0.9.0-20-gd198bcf",
+			"Rev": "d198bcf1ddf7d69872b506da7d4c4862121a9d8a"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "e0403b4e005737430c05a57aac078479844f919c"
+			"Rev": "c2528b2dd8352441850638a8bb678c2ad056fd3e"
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
-			"Rev": "b5adcc2dcdf009d0391547edc6ecbaff889f5bb9"
+			"Rev": "2baa8a1b9338cf13d9eeb27696d761155fa480be"
 		}
 	]
 }
