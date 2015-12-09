@@ -40,7 +40,6 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 		}
 
 		for _, media := range likedMedia {
-			fmt.Println(media.ID)
 			// Set the new "InstagramLastSavedMediaID" value: we want the first media
 			// ID processed to be come the future reference of where we should stop
 			// processing

@@ -81,6 +81,7 @@ func NewRouter() {
 	goji.Get("/running", router.healthCheck)
 	goji.Get("/fetch_instagram_token", router.fetchInstagramToken)
 	goji.Get("/save_instagram_media", router.saveInstagramMedia)
+	goji.Get("/show_recently_liked", router.showRecentlyLiked)
 
 	return
 }
