@@ -1,12 +1,14 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/benspotatoes/fulsome-corgi/backend"
 	"github.com/tanookiben/go-instagram/instagram"
@@ -20,6 +22,57 @@ var (
 	filenameRgx = regexp.MustCompile("\\w+\\.(mp4|jpg|png)")
 )
 
+type recentlyLiked struct {
+	RecentlyLiked []backend.InstagramMetadata `json:"recentlyLiked"`
+}
+
+type numSaved struct {
+	Count int `json:"numSaved"`
+}
+
+func (T *Router) showRecentlyLiked(c web.C, w http.ResponseWriter, r *http.Request) {
+	usersService := T.Instagram.Users
+
+	var count int
+	count, err := strconv.Atoi(c.URLParams["count"])
+	if err != nil {
+		count = 10
+	}
+	opt := &instagram.Parameters{
+		Count: uint64(count),
+	}
+
+	likedMedia, _, err := usersService.LikedMedia(opt)
+	if err != nil {
+		T.serveError(w, r, err)
+	}
+
+	var liked []backend.InstagramMetadata
+	// liked := make([]backend.InstagramMetadata, count)
+	for _, media := range likedMedia {
+		mediaSource, err := getMediaSource(media)
+		if err != nil {
+			log.Println(err)
+		}
+		metadata := backend.InstagramMetadata{
+			ID:       media.ID,
+			Author:   media.User.Username,
+			Source:   mediaSource,
+			Filename: getMediaFilename(mediaSource),
+		}
+		metadata.Saved = backend.MediaSaved(metadata, T.Dropbox)
+		liked = append(liked, metadata)
+	}
+
+	w.WriteHeader(200)
+	err = json.NewEncoder(w).Encode(recentlyLiked{
+		RecentlyLiked: liked,
+	})
+	if err != nil {
+		T.serveError(w, r, err)
+	}
+}
+
 // TODO - add max allowed number of media to save per run?
 func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Request) {
 	var err error
@@ -31,6 +84,7 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 
 	var lastSavedUpdated bool
 	var breakSave bool
+	var countSaved int
 
 	refLastSavedMediaID := T.Config.InstagramLastSavedMediaID
 	for !breakSave {
@@ -61,6 +115,7 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 					log.Println(err)
 				}
 				metadata := backend.InstagramMetadata{
+					ID:       media.ID,
 					Author:   media.User.Username,
 					Source:   mediaSource,
 					Filename: getMediaFilename(mediaSource),
@@ -71,6 +126,8 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 					err = backend.SaveMedia(metadata, T.Dropbox)
 					if err != nil {
 						log.Println(err)
+					} else {
+						countSaved += 1
 					}
 				}
 
@@ -82,6 +139,14 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 	}
 
 	err = ioutil.WriteFile(T.Config.InstagramLastSavedPath, []byte(T.Config.InstagramLastSavedMediaID), 0644)
+	if err != nil {
+		T.serveError(w, r, err)
+	}
+
+	w.WriteHeader(200)
+	err = json.NewEncoder(w).Encode(numSaved{
+		Count: countSaved,
+	})
 	if err != nil {
 		T.serveError(w, r, err)
 	}
