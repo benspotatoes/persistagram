@@ -26,8 +26,9 @@ type recentlyLiked struct {
 	RecentlyLiked []backend.InstagramMetadata `json:"recentlyLiked"`
 }
 
-type numSaved struct {
-	Count int `json:"numSaved"`
+type saveMediaResp struct {
+	Unsaved []backend.InstagramMetadata `json:"unsavedMedia"`
+	Count   int                         `json:"numSaved"`
 }
 
 func (T *Router) showRecentlyLiked(c web.C, w http.ResponseWriter, r *http.Request) {
@@ -87,6 +88,7 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 	var countSaved int
 
 	refLastSavedMediaID := T.Config.InstagramLastSavedMediaID
+	var unsavedMedia []backend.InstagramMetadata
 	for !breakSave {
 		likedMedia, pagination, err := usersService.LikedMedia(opt)
 		if err != nil {
@@ -94,6 +96,8 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 		}
 
 		for _, media := range likedMedia {
+			log.Println(fmt.Sprintf("Parsing media ID '%s'", media.ID))
+			var saved bool
 			// Set the new "InstagramLastSavedMediaID" value: we want the first media
 			// ID processed to be come the future reference of where we should stop
 			// processing
@@ -127,6 +131,7 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 					if err != nil {
 						log.Println(err)
 					} else {
+						saved = true
 						countSaved += 1
 					}
 				}
@@ -134,6 +139,12 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 				// Update pagination struct to return the next batch of unprocessed
 				// liked media
 				opt.MaxID = pagination.NextMaxLikeID
+
+				// Keep track of unsaved media for response
+				if !saved {
+					metadata.Saved = false
+					unsavedMedia = append(unsavedMedia, metadata)
+				}
 			}
 		}
 	}
@@ -144,8 +155,9 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 	}
 
 	w.WriteHeader(200)
-	err = json.NewEncoder(w).Encode(numSaved{
-		Count: countSaved,
+	err = json.NewEncoder(w).Encode(saveMediaResp{
+		Unsaved: unsavedMedia,
+		Count:   countSaved,
 	})
 	if err != nil {
 		T.serveError(w, r, err)
