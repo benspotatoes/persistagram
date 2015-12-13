@@ -134,6 +134,8 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 						saved = true
 						countSaved += 1
 					}
+				} else {
+					breakSave = true
 				}
 
 				// Update pagination struct to return the next batch of unprocessed
@@ -141,7 +143,7 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 				opt.MaxID = pagination.NextMaxLikeID
 
 				// Keep track of unsaved media for response
-				if !saved {
+				if !saved && !breakSave {
 					metadata.Saved = false
 					unsavedMedia = append(unsavedMedia, metadata)
 				}
