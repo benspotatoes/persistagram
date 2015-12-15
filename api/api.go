@@ -49,7 +49,13 @@ func NewRouter() {
 	instagram := instagram.NewClient(nil)
 	instagram.ClientID = conf.InstagramClientID
 	instagram.ClientSecret = conf.InstagramClientSecret
-	tkn, err := ioutil.ReadFile(conf.InstagramAccessTokenPath)
+
+	db := dropbox.NewDropbox()
+	db.SetAppInfo(conf.DropboxClientID, conf.DropboxClientSecret)
+	db.SetAccessToken(conf.DropboxAccessToken)
+
+	db.DownloadToFile("ig_access_token", "ig_access_token.tmp", "")
+	tkn, err := ioutil.ReadFile("ig_access_token.tmp")
 	if err != nil {
 		log.Println(err)
 	}
@@ -58,8 +64,11 @@ func NewRouter() {
 		conf.InstagramAccessToken = instagramToken
 		instagram.AccessToken = instagramToken
 	}
+	os.Remove("ig_access_token.tmp")
 
-	saved, err := ioutil.ReadFile(conf.InstagramLastSavedPath)
+	db.DownloadToFile("ig_last_saved", "ig_last_saved.tmp", "")
+	defer os.Remove("ig_last_saved.tmp")
+	saved, err := ioutil.ReadFile("ig_last_saved.tmp")
 	if err != nil {
 		log.Println(err)
 	}
@@ -67,10 +76,6 @@ func NewRouter() {
 	if lastSavedMediaID != "" {
 		conf.InstagramLastSavedMediaID = lastSavedMediaID
 	}
-
-	db := dropbox.NewDropbox()
-	db.SetAppInfo(conf.DropboxClientID, conf.DropboxClientSecret)
-	db.SetAccessToken(conf.DropboxAccessToken)
 
 	router := Router{
 		Config:    &conf,

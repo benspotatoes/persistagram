@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -151,10 +152,12 @@ func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Requ
 		}
 	}
 
-	err = ioutil.WriteFile(T.Config.InstagramLastSavedPath, []byte(T.Config.InstagramLastSavedMediaID), 0644)
+	err = ioutil.WriteFile("new_ig_last_saved.tmp", []byte(T.Config.InstagramLastSavedMediaID), 0644)
 	if err != nil {
 		T.serveError(w, r, err)
 	}
+	T.Dropbox.UploadFile("new_ig_last_saved.tmp", "ig_last_saved", true, "")
+	os.Remove("new_ig_last_saved.tmp")
 
 	w.WriteHeader(200)
 	err = json.NewEncoder(w).Encode(saveMediaResp{
