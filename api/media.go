@@ -75,8 +75,38 @@ func (T *Router) showRecentlyLiked(c web.C, w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// TODO - add max allowed number of media to save per run?
 func (T *Router) saveInstagramMedia(c web.C, w http.ResponseWriter, r *http.Request) {
+	// https://github.com/MrSaints/go-instagram/commit/aafde5d7454701055fb61cd7ac5ff2eac8cdef6a
+	shortcode := c.URLParams["shortcode"]
+	media, err := T.Instagram.Media.Shortcode(shortcode)
+	if err != nil {
+		T.serveError(w, r, err)
+		return
+	}
+
+	mediaSource, err := getMediaSource(*media)
+	if err != nil {
+		T.serveError(w, r, err)
+		return
+	}
+	metadata := backend.InstagramMetadata{
+		ID:       media.ID,
+		Author:   media.User.Username,
+		Source:   mediaSource,
+		Filename: getMediaFilename(mediaSource),
+	}
+
+	err = backend.SaveMedia(metadata, T.Dropbox)
+	if err != nil {
+		T.serveError(w, r, err)
+		return
+	}
+
+	w.WriteHeader(200)
+}
+
+// TODO - add max allowed number of media to save per run?
+func (T *Router) saveRecentlyLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	usersService := T.Instagram.Users
