@@ -124,6 +124,23 @@ func (s *MediaService) Get(mediaId string) (*Media, error) {
 	return media, err
 }
 
+// https://github.com/MrSaints/go-instagram/commit/aafde5d7454701055fb61cd7ac5ff2eac8cdef6a
+// Get information about a media object using its shortcode (found in the URL).
+// This endpoint returns the same response as GET /media/media-id.
+//
+// Instagram API docs: https://instagram.com/developer/endpoints/media/#get_media_by_shortcode
+func (s *MediaService) Shortcode(sc string) (*Media, error) {
+	u := fmt.Sprintf("media/shortcode/%v", sc)
+	req, err := s.client.NewRequest("GET", u, "")
+	if err != nil {
+		return nil, err
+	}
+
+	media := new(Media)
+	_, err = s.client.Do(req, media)
+	return media, err
+}
+
 // Search return search results for media in a given area.
 //
 // http://instagram.com/developer/endpoints/media/#get_media_search

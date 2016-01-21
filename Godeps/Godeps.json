@@ -11,8 +11,8 @@
 		},
 		{
 			"ImportPath": "github.com/tanookiben/go-instagram/instagram",
-			"Comment": "0.5-3-g3137500",
-			"Rev": "31375005eb8d9d1a4aaae252ad85895c0c53f55c"
+			"Comment": "0.5-4-gd7a0ef8",
+			"Rev": "d7a0ef8060dadd9ce5070a61770ca827c1f0a037"
 		},
 		{
 			"ImportPath": "github.com/zenazn/goji",
