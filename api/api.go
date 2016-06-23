@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -31,63 +30,26 @@ var (
 
 func NewRouter() {
 	var conf config
-
-	conf.InstagramClientID = os.Getenv("IG_CLIENT_ID")
-	conf.InstagramClientSecret = os.Getenv("IG_CLIENT_SECRET")
-	conf.InstagramRedirectURL = os.Getenv("IG_REDIRECT_URL")
-	conf.InstagramAccessTokenPath = os.Getenv("IG_ACCESS_TOKEN_PATH")
-	conf.InstagramLastSavedPath = os.Getenv("IG_LAST_SAVED_PATH")
-	conf.InstagramLastSavedMediaID = os.Getenv("IG_LAST_SAVED_MEDIA_ID")
 	conf.DropboxClientID = os.Getenv("DB_CLIENT_ID")
 	conf.DropboxClientSecret = os.Getenv("DB_CLIENT_SECRET")
 	conf.DropboxAccessToken = os.Getenv("DB_ACCESS_TOKEN")
+	conf.LikedTxtPath = os.Getenv("DB_LIKED_TXT_PATH")
 
 	if !(&conf).Ready() {
 		log.Fatal(ErrConfigNotReady)
 	}
 
-	instagram := instagram.NewClient(nil)
-	instagram.ClientID = conf.InstagramClientID
-	instagram.ClientSecret = conf.InstagramClientSecret
-
 	db := dropbox.NewDropbox()
 	db.SetAppInfo(conf.DropboxClientID, conf.DropboxClientSecret)
 	db.SetAccessToken(conf.DropboxAccessToken)
 
-	db.DownloadToFile("ig_access_token", "ig_access_token.tmp", "")
-	tkn, err := ioutil.ReadFile("ig_access_token.tmp")
-	if err != nil {
-		log.Println(err)
-	}
-	instagramToken := string(tkn)
-	if instagramToken != "" {
-		conf.InstagramAccessToken = instagramToken
-		instagram.AccessToken = instagramToken
-	}
-	os.Remove("ig_access_token.tmp")
-
-	db.DownloadToFile("ig_last_saved", "ig_last_saved.tmp", "")
-	defer os.Remove("ig_last_saved.tmp")
-	saved, err := ioutil.ReadFile("ig_last_saved.tmp")
-	if err != nil {
-		log.Println(err)
-	}
-	lastSavedMediaID := string(saved)
-	if lastSavedMediaID != "" {
-		conf.InstagramLastSavedMediaID = lastSavedMediaID
-	}
-
 	router := Router{
-		Config:    &conf,
-		Instagram: instagram,
-		Dropbox:   db,
+		Config:  &conf,
+		Dropbox: db,
 	}
 
 	goji.Get("/running", router.healthCheck)
-	goji.Get("/fetch_instagram_token", router.fetchInstagramToken)
-	goji.Get("/save_recently_liked", router.saveRecentlyLiked)
-	goji.Get("/show_recently_liked/:count", router.showRecentlyLiked)
-	goji.Get("/save_instagram_media/:shortcode", router.saveInstagramMedia)
+	goji.Get("/save_liked", router.saveLiked)
 
 	return
 }

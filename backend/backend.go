@@ -5,5 +5,4 @@ type InstagramMetadata struct {
 	Author   string `json:"author"`
 	Source   string `json:"source"`
 	Filename string `json:"filename"`
-	Saved    bool   `json:"saved"`
 }
