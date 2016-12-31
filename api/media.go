@@ -25,7 +25,7 @@ var (
 
 const (
 	retryCount    = 5
-	retryDuration = 5 * time.Second
+	retryDuration = 30 * time.Second
 )
 
 func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
