@@ -1,0 +1,41 @@
+hash: ede637045c65dc21b5f73a162a9a5687358db815f54c124812af0fa4793f5a5e
+updated: 2016-12-31T14:46:26.394285725-08:00
+imports:
+- name: github.com/golang/protobuf
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
+  subpackages:
+  - proto
+- name: github.com/stacktic/dropbox
+  version: daee057d5b32f4c64cf56efa3ce5fb1a83ef8516
+- name: github.com/tanookiben/go-instagram
+  version: d7a0ef8060dadd9ce5070a61770ca827c1f0a037
+  subpackages:
+  - instagram
+- name: github.com/zenazn/goji
+  version: d198bcf1ddf7d69872b506da7d4c4862121a9d8a
+  subpackages:
+  - bind
+  - graceful
+  - graceful/listener
+  - web
+  - web/middleware
+  - web/mutil
+- name: golang.org/x/net
+  version: c2528b2dd8352441850638a8bb678c2ad056fd3e
+  subpackages:
+  - context
+- name: golang.org/x/oauth2
+  version: 2baa8a1b9338cf13d9eeb27696d761155fa480be
+  subpackages:
+  - internal
+- name: google.golang.org/appengine
+  version: 08a149cfaee099e6ce4be01c0113a78c85ee1dee
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
+testImports: []
