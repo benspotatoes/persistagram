@@ -62,6 +62,7 @@ func (T *Router) healthCheck(c web.C, w http.ResponseWriter, r *http.Request) {
 }
 
 func (T *Router) serveError(w http.ResponseWriter, r *http.Request, e error) {
+	log.Printf("returning error: %q", e)
 	response := errorResponse{
 		Code:   500,
 		Status: e.Error(),

@@ -23,6 +23,11 @@ var (
 	ctnRe = regexp.MustCompile(`og:description" content="See this Instagram (\w+) by @(\w+)`)
 )
 
+const (
+	retryCount    = 5
+	retryDuration = 5 * time.Second
+)
+
 func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 	err := rt.Dropbox.DownloadToFile(rt.Config.LikedTxtPath, "liked.txt.tmp", "")
 	if err != nil {
@@ -95,9 +100,17 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 		log.Println(data)
 
 		go func() {
-			err := backend.SaveMedia(data, rt.Dropbox)
-			if err != nil {
-				log.Printf("error saving media for url %s: %q\n", data.Source, err)
+			retry := 0
+			for {
+				err := backend.SaveMedia(data, rt.Dropbox)
+				if err != nil {
+					if retry >= retryCount {
+						log.Printf("error saving media for url %s: %q\n", data.Source, err)
+						return
+					}
+					time.Sleep(time.Duration(retry) * retryDuration)
+				}
+				return
 			}
 		}()
 	}
