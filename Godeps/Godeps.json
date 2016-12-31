@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/benspotatoes/fulsome-corgi",
+	"ImportPath": "github.com/benspotatoes/persistagram",
 	"GoVersion": "go1.5.2",
 	"Packages": [
 		"./..."

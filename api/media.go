@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/benspotatoes/fulsome-corgi/backend"
+	"github.com/benspotatoes/persistagram/backend"
 	"github.com/zenazn/goji/web"
 )
 

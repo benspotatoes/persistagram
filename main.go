@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/benspotatoes/fulsome-corgi/api"
+	"github.com/benspotatoes/persistagram/api"
 
 	"github.com/zenazn/goji"
 )
