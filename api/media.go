@@ -29,18 +29,18 @@ const (
 )
 
 func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
-	err := rt.Dropbox.DownloadToFile(rt.Config.LikedTxtPath, "liked.txt.tmp", "")
+	err := rt.Dropbox.DownloadToFile(rt.Config.LikedTxtPath, "/tmp/liked.txt.tmp", "")
 	if err != nil {
 		rt.serveError(w, r, err)
 		return
 	}
 
-	raw, err := ioutil.ReadFile("liked.txt.tmp")
+	raw, err := ioutil.ReadFile("/tmp/liked.txt.tmp")
 	if err != nil {
 		rt.serveError(w, r, err)
 		return
 	}
-	defer os.Remove("liked.txt.tmp")
+	defer os.Remove("/tmp/liked.txt.tmp")
 
 	liked := strings.Split(string(raw), "\n")
 	for _, ig := range liked {
