@@ -20,7 +20,8 @@ var (
 
 	mp4Re = regexp.MustCompile(`og:video:secure_url" content="(https:\/\/.*\.mp4)" `)
 	jpgRe = regexp.MustCompile(`og:image" content="(https:\/\/.*\.jpg)`)
-	ctnRe = regexp.MustCompile(`og:description" content="See this Instagram (\w+) by @(\w+)`)
+	ctnRe = regexp.MustCompile(`og:description" content=".* \(@(\w+)\)`)
+	mdaRe = regexp.MustCompile(`meta name="medium" content="(.*)"`)
 )
 
 const (
@@ -64,20 +65,25 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 		sbody := string(body)
 
 		meta := ctnRe.FindStringSubmatch(sbody)
-		if len(meta) != 3 {
-			log.Println("unable to get metadata")
+		if len(meta) != 2 {
+			log.Println("unable to get username")
 			continue
 		}
+		username := meta[1]
 
-		username := meta[2]
-		mediaType := meta[1]
+		data := mdaRe.FindStringSubmatch(sbody)
+		if len(data) != 2 {
+			log.Println("unable to get medium type")
+			continue
+		}
+		mediaType := data[1]
 
 		var src string
 		switch mediaType {
-		case "photo":
+		case "image":
 			img := jpgRe.FindStringSubmatch(sbody)
 			if len(img) != 2 {
-				log.Println("unable to get photo source")
+				log.Println("unable to get image source")
 				continue
 			}
 			src = img[1]
