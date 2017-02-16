@@ -71,12 +71,12 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 		}
 		username := meta[1]
 
-		data := mdaRe.FindStringSubmatch(sbody)
-		if len(data) != 2 {
+		metadata := mdaRe.FindStringSubmatch(sbody)
+		if len(metadata) != 2 {
 			log.Println("unable to get medium type")
 			continue
 		}
-		mediaType := data[1]
+		mediaType := metadata[1]
 
 		var src string
 		switch mediaType {
