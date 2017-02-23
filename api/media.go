@@ -99,35 +99,7 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 		var src []string
 
 		sharedData := sharedDataRe.FindStringSubmatch(sbody)
-		if len(sharedData) != 2 {
-			log.Println("unable to get shared media, falling back to basic parsing")
-
-			metadata := mdaRe.FindStringSubmatch(sbody)
-			if len(metadata) != 2 {
-				log.Println("unable to get medium type")
-				continue
-			}
-			mediaType := metadata[1]
-
-			switch mediaType {
-			case "image":
-				img := jpgRe.FindStringSubmatch(sbody)
-				if len(img) != 2 {
-					log.Println("unable to get image source")
-					continue
-				}
-				src = append(src, img[1])
-			case "video":
-				vid := mp4Re.FindStringSubmatch(sbody)
-				if len(vid) != 2 {
-					log.Println("unable to get video source")
-					continue
-				}
-				src = append(src, vid[1])
-			default:
-				continue
-			}
-		} else {
+		if len(sharedData) == 2 {
 			blob := sharedData[1]
 			data := SharedData{}
 			err := json.Unmarshal([]byte(blob), &data)
@@ -175,6 +147,30 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 					src = append(src, displayURL)
 				}
 			}
+		}
+
+		metadata := mdaRe.FindStringSubmatch(sbody)
+		if len(metadata) != 2 {
+			log.Println("unable to get medium type")
+			continue
+		}
+		mediaType := metadata[1]
+
+		switch mediaType {
+		case "image":
+			img := jpgRe.FindStringSubmatch(sbody)
+			if len(img) != 2 {
+				log.Println("unable to get image source")
+				continue
+			}
+			src = append(src, img[1])
+		case "video":
+			vid := mp4Re.FindStringSubmatch(sbody)
+			if len(vid) != 2 {
+				log.Println("unable to get video source")
+				continue
+			}
+			src = append(src, vid[1])
 		}
 
 		for _, s := range src {
