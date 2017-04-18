@@ -39,11 +39,20 @@ type EntryData struct {
 	PostPage []*PostPage `json:"PostPage"`
 }
 type PostPage struct {
-	Media *Media `json:"media"`
+	// Media *Media `json:"media"`
+	Graphql *Graphql `json:"graphql"`
 }
-type Media struct {
+type Graphql struct {
+	ShortcodeMedia *ShortcodeMedia `json:"shortcode_media"`
+}
+type ShortcodeMedia struct {
 	EdgeSidecarToChildren *EdgeSidecarToChildren `json:"edge_sidecar_to_children"`
 }
+
+// type Media struct {
+// 	EdgeSidecarToChildren *EdgeSidecarToChildren `json:"edge_sidecar_to_children"`
+// }
+
 type EdgeSidecarToChildren struct {
 	Edges []*Edge `json:"edges"`
 }
@@ -118,9 +127,14 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 			for _, post := range data.EntryData.PostPage {
-				media := post.Media
+				graph := post.Graphql
+				if graph == nil {
+					log.Println("empty graphql")
+					continue
+				}
+				media := graph.ShortcodeMedia
 				if media == nil {
-					log.Println("empty post media")
+					log.Println("empty shortcode media")
 					continue
 				}
 				sidecar := media.EdgeSidecarToChildren
