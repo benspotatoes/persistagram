@@ -105,7 +105,7 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 		}
 		username := meta[1]
 
-		var src []string
+		var src make(map[string]bool)
 
 		sharedData := sharedDataRe.FindStringSubmatch(sbody)
 		if len(sharedData) == 2 {
@@ -158,7 +158,7 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 						log.Println("empty display url")
 						continue
 					}
-					src = append(src, displayURL)
+					src[displayURL] = true
 				}
 			}
 		}
@@ -177,17 +177,17 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 				log.Println("unable to get image source")
 				continue
 			}
-			src = append(src, img[1])
+			src[img[1]] = true
 		case "video":
 			vid := mp4Re.FindStringSubmatch(sbody)
 			if len(vid) != 2 {
 				log.Println("unable to get video source")
 				continue
 			}
-			src = append(src, vid[1])
+			src[vid[1]] = true
 		}
 
-		for _, s := range src {
+		for s, _ := range src {
 			data := backend.InstagramMetadata{
 				Author:   username,
 				Source:   s,
