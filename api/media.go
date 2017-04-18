@@ -21,7 +21,7 @@ var (
 
 	mp4Re = regexp.MustCompile(`og:video:secure_url" content="(https:\/\/.*\.mp4)" `)
 	jpgRe = regexp.MustCompile(`og:image" content="(https:\/\/.*\.jpg)`)
-	ctnRe = regexp.MustCompile(`og:description" content=".* \(@(.*)\) on Instagram`)
+	ctnRe = regexp.MustCompile(`og:description" content=".* \(?@(.*)\)? on Instagram`)
 	mdaRe = regexp.MustCompile(`meta name="medium" content="(.*)"`)
 
 	sharedDataRe = regexp.MustCompile(`sharedData = (\{.*\})`)
