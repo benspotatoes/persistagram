@@ -105,7 +105,7 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 		}
 		username := meta[1]
 
-		var src make(map[string]bool)
+		src := make(map[string]bool)
 
 		sharedData := sharedDataRe.FindStringSubmatch(sbody)
 		if len(sharedData) == 2 {
