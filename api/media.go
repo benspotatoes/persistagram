@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"regexp"
@@ -62,6 +63,10 @@ type Edge struct {
 }
 type Node struct {
 	DisplayUrl string `json:"display_url"`
+}
+
+func init() {
+	rand.Seed(time.Now().Unix())
 }
 
 func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
@@ -200,6 +205,7 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 			log.Println(data)
 
 			go func() {
+				time.Sleep(rand.Intn(5000))
 				retry := 0
 				for {
 					err := backend.SaveMedia(data, rt.Dropbox)
