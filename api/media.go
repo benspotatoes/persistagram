@@ -206,7 +206,7 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 			log.Println(data)
 
 			go func() {
-				time.Sleep(rand.Intn(randSleep) * time.Millisecond)
+				time.Sleep(time.Duration(rand.Intn(randSleep)) * time.Millisecond)
 				retry := 0
 				for {
 					err := backend.SaveMedia(data, rt.Dropbox)
