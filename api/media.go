@@ -32,7 +32,7 @@ var (
 const (
 	retryCount    = 5
 	retryDuration = 30 * time.Second
-	randSleep = 5000
+	randSleep     = 5000
 )
 
 type SharedData struct {
@@ -204,6 +204,10 @@ func (rt *Router) saveLiked(c web.C, w http.ResponseWriter, r *http.Request) {
 				Filename: getMediaFilename(s),
 			}
 			log.Println(data)
+
+			if backend.MediaSaved(data, rt.Dropbox) {
+				continue
+			}
 
 			go func() {
 				time.Sleep(time.Duration(rand.Intn(randSleep)) * time.Millisecond)
