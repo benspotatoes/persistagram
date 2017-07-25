@@ -1,19 +1,15 @@
 package: github.com/benspotatoes/persistagram
 import:
-- package: github.com/stacktic/dropbox
-  version: daee057d5b32f4c64cf56efa3ce5fb1a83ef8516
-- package: github.com/tanookiben/go-instagram
-  version: d7a0ef8060dadd9ce5070a61770ca827c1f0a037
-  subpackages:
-  - instagram
 - package: github.com/tj/go-dropbox
   version: 2de702dc3e925adbf993ddd2192cebd7a24ae1a1
 - package: github.com/tj/go-dropy
   version: 225699a121562d2a1112529722a2368816df355f
-- package: github.com/zenazn/goji
-  version: d198bcf1ddf7d69872b506da7d4c4862121a9d8a
+- package: goji.io
+  version: 0d89ff54b2c18c9c4ba530e32496aef902d3c6cd
   subpackages:
-  - web
+  - internal
+  - pat
+  - pattern
 - package: golang.org/x/net
   version: c2528b2dd8352441850638a8bb678c2ad056fd3e
   subpackages:

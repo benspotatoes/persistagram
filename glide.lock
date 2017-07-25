@@ -1,5 +1,5 @@
-hash: 427d4ff733dca5d530b5f1fc515e89f78768f136bbde05459b1a59cb2e6fe280
-updated: 2017-07-24T16:31:59.894367577-07:00
+hash: fe5f18638f73424a65ffaf75a74619d0049ae708b1f0dabe57d7dad554e0ae76
+updated: 2017-07-24T18:13:02.53552973-07:00
 imports:
 - name: github.com/golang/protobuf
   version: 8ee79997227bf9b34611aee7946ae64735e6fd93
@@ -7,23 +7,16 @@ imports:
   - proto
 - name: github.com/stacktic/dropbox
   version: daee057d5b32f4c64cf56efa3ce5fb1a83ef8516
-- name: github.com/tanookiben/go-instagram
-  version: d7a0ef8060dadd9ce5070a61770ca827c1f0a037
-  subpackages:
-  - instagram
 - name: github.com/tj/go-dropbox
   version: 2de702dc3e925adbf993ddd2192cebd7a24ae1a1
 - name: github.com/tj/go-dropy
   version: 225699a121562d2a1112529722a2368816df355f
-- name: github.com/zenazn/goji
-  version: d198bcf1ddf7d69872b506da7d4c4862121a9d8a
+- name: goji.io
+  version: 0d89ff54b2c18c9c4ba530e32496aef902d3c6cd
   subpackages:
-  - bind
-  - graceful
-  - graceful/listener
-  - web
-  - web/middleware
-  - web/mutil
+  - internal
+  - pat
+  - pattern
 - name: golang.org/x/net
   version: c2528b2dd8352441850638a8bb678c2ad056fd3e
   subpackages:
