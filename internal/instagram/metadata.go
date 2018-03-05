@@ -41,6 +41,7 @@ type Edge struct {
 }
 type Node struct {
 	DisplayUrl string `json:"display_url"`
+	VideoURL   string `json:"video_url"`
 }
 
 var (
@@ -68,6 +69,7 @@ var (
 	errEdges                 = errors.New("unable to get edges")
 	errNode                  = errors.New("unable to get node")
 	errDisplayURL            = errors.New("unable to get display url")
+	errVideoURL              = errors.New("unable to get video url")
 	errMedium                = errors.New("unable to get medium")
 
 	errImage = errors.New("unable to get image source")
@@ -135,12 +137,14 @@ func Parse(source string) (*Metadata, error) {
 				}
 
 				displayURL := edge.Node.DisplayUrl
-				if displayURL == "" {
-					log.Printf(errDisplayURL.Error())
-					continue
+				if displayURL != "" {
+					links[displayURL] = filename(displayURL)
 				}
 
-				links[displayURL] = filename(displayURL)
+				videoURL := edge.Node.VideoURL
+				if videoURL != "" {
+					links[videoURL] = filename(videoURL)
+				}
 			}
 		}
 	}
