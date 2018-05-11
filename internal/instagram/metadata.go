@@ -2,7 +2,7 @@ package instagram
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"log"
 	"regexp"
 )
@@ -58,35 +58,17 @@ var (
 	sharedDataRe = regexp.MustCompile(`sharedData = (\{.*\})`)
 )
 
-var (
-	errUsername              = errors.New("unable to get username")
-	errSharedData            = errors.New("unable to get shared data")
-	errEntryData             = errors.New("unable to get entry data")
-	errPostPage              = errors.New("unable to get post page")
-	errGraphql               = errors.New("unable to get graphql")
-	errShortcodeMedia        = errors.New("unable to get shortcode media")
-	errEdgeSidecarToChildren = errors.New("unable to get edge sidecar to children")
-	errEdges                 = errors.New("unable to get edges")
-	errNode                  = errors.New("unable to get node")
-	errDisplayURL            = errors.New("unable to get display url")
-	errVideoURL              = errors.New("unable to get video url")
-	errMedium                = errors.New("unable to get medium")
-
-	errImage = errors.New("unable to get image source")
-	errVideo = errors.New("unable to get video source")
-)
-
 const (
 	imageType = "image"
 	videoType = "video"
 )
 
-func Parse(source string) (*Metadata, error) {
+func Parse(source string, debug bool) (*Metadata, error) {
 	content := contentRe.FindStringSubmatch(source)
 	if len(content) != 2 {
 		content = content2Re.FindStringSubmatch(source)
 		if len(content) != 2 {
-			return nil, errUsername
+			return nil, fmt.Errorf("unable to get username for source %s", source)
 		}
 	}
 	username := content[1]
@@ -98,41 +80,57 @@ func Parse(source string) (*Metadata, error) {
 		data := SharedData{}
 		err := json.Unmarshal([]byte(sharedData[1]), &data)
 		if err != nil {
-			log.Printf(errSharedData.Error())
+			if debug {
+				log.Printf("unable to get shared data for source %s", source)
+			}
 		}
 
 		if entryData := data.EntryData; entryData == nil {
-			log.Printf(errEntryData.Error())
+			if debug {
+				log.Printf("unable to get entry data for source %s", source)
+			}
 		}
 
 		if postPage := data.EntryData.PostPage; postPage == nil {
-			log.Printf(errPostPage.Error())
+			if debug {
+				log.Printf("unable to get post page for source %s", source)
+			}
 		}
 
 		for _, post := range data.EntryData.PostPage {
 			if graph := post.Graphql; graph == nil {
-				log.Printf(errGraphql.Error())
+				if debug {
+					log.Printf("unable to get graphql for source %s", source)
+				}
 				continue
 			}
 
 			if media := post.Graphql.ShortcodeMedia; media == nil {
-				log.Printf(errShortcodeMedia.Error())
+				if debug {
+					log.Printf("unable to get shortcode media for source %s", source)
+				}
 				continue
 			}
 
 			if sidecar := post.Graphql.ShortcodeMedia.EdgeSidecarToChildren; sidecar == nil {
-				log.Printf(errEdgeSidecarToChildren.Error())
+				if debug {
+					log.Printf("unable to get edge sidecar to children for source %s", source)
+				}
 				continue
 			}
 
 			if edges := post.Graphql.ShortcodeMedia.EdgeSidecarToChildren.Edges; len(edges) == 0 {
-				log.Printf(errEdges.Error())
+				if debug {
+					log.Printf("unable to get edges for source %s", source)
+				}
 				continue
 			}
 
 			for _, edge := range post.Graphql.ShortcodeMedia.EdgeSidecarToChildren.Edges {
 				if node := edge.Node; node == nil {
-					log.Printf(errNode.Error())
+					if debug {
+						log.Printf("unable to get node for source %s", source)
+					}
 					continue
 				}
 
@@ -151,7 +149,7 @@ func Parse(source string) (*Metadata, error) {
 
 	metadata := mediumRe.FindStringSubmatch(source)
 	if len(metadata) != 2 {
-		return nil, errMedium
+		return nil, fmt.Errorf("unable to get medium for source %s", source)
 	}
 	mediaType := metadata[1]
 
@@ -159,13 +157,13 @@ func Parse(source string) (*Metadata, error) {
 	case imageType:
 		img := imageRe.FindStringSubmatch(source)
 		if len(img) != 2 {
-			return nil, errImage
+			return nil, fmt.Errorf("unable to get image for source %s", source)
 		}
 		links[img[1]] = filename(img[1])
 	case videoType:
 		vid := videoRe.FindStringSubmatch(source)
 		if len(vid) != 2 {
-			return nil, errVideo
+			return nil, fmt.Errorf("unable to get video for source %s", source)
 		}
 		links[vid[1]] = filename(vid[1])
 	}

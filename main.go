@@ -1,22 +1,28 @@
 package main
 
 import (
-	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/benspotatoes/persistagram/api"
 	"github.com/benspotatoes/persistagram/backend"
-	dropbox "github.com/tj/go-dropbox"
-	dropy "github.com/tj/go-dropy"
 )
 
 func main() {
-	db := initDropbox()
-	backend := backend.NewBackend(db)
-	api := api.NewRouter(backend, db)
-	http.ListenAndServe("localhost:8000", api)
-}
+	backend := backend.NewBackend()
 
-func initDropbox() *dropy.Client {
-	return dropy.New(dropbox.New(dropbox.NewConfig(os.Getenv("DB_ACCESS_TOKEN"))))
+	kill := make(chan os.Signal, 1)
+	signal.Notify(kill, syscall.SIGINT, syscall.SIGTERM)
+
+	cron := time.NewTicker(4 * time.Hour).C
+
+	for {
+		select {
+		case <-cron:
+			backend.Process()
+		case <-kill:
+			return
+		}
+	}
 }

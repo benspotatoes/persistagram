@@ -21,7 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	parsed, err := instagram.Parse(string(raw))
+	parsed, err := instagram.Parse(string(raw), true)
 	if err != nil {
 		panic(err)
 	}

@@ -1,35 +1,21 @@
 package backend
 
 import (
-	"fmt"
+	"os"
 
+	dropbox "github.com/tj/go-dropbox"
 	dropy "github.com/tj/go-dropy"
 )
 
-type InstagramMetadata struct {
-	ID       string `json:"id"`
-	Author   string `json:"author"`
-	Source   string `json:"source"`
-	Filename string `json:"filename"`
-}
-
 type Backend interface {
-	Exists(data InstagramMetadata) bool
-	Save(data InstagramMetadata) error
+	Process()
 }
 
 type backendImpl struct {
 	db *dropy.Client
 }
 
-func NewBackend(db *dropy.Client) Backend {
+func NewBackend() Backend {
+	db := dropy.New(dropbox.New(dropbox.NewConfig(os.Getenv("DB_ACCESS_TOKEN"))))
 	return &backendImpl{db}
-}
-
-func (data *InstagramMetadata) localFilename() string {
-	return fmt.Sprintf("/tmp/%s", data.Filename)
-}
-
-func (data *InstagramMetadata) remoteFilename() string {
-	return fmt.Sprintf("/%s/%s", data.Author, data.Filename)
 }
