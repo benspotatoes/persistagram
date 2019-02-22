@@ -8,15 +8,24 @@ import (
 )
 
 type Backend interface {
-	Process()
+	Poll()
 	Save(link string)
 }
 
 type backendImpl struct {
-	db *dropy.Client
+	db       *dropy.Client
+	saveFile string
 }
+
+var (
+	attempts = []int{1, 2, 3}
+)
 
 func NewBackend() Backend {
 	db := dropy.New(dropbox.New(dropbox.NewConfig(os.Getenv("DB_ACCESS_TOKEN"))))
-	return &backendImpl{db}
+	saveFile := os.Getenv("SAVE_FILE")
+	if saveFile == "" {
+		saveFile = "/save.txt"
+	}
+	return &backendImpl{db, saveFile}
 }

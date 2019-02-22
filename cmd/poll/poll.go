@@ -11,6 +11,7 @@ import (
 
 func main() {
 	backend := backend.NewBackend()
+	backend.Poll()
 
 	kill := make(chan os.Signal, 1)
 	signal.Notify(kill, syscall.SIGINT, syscall.SIGTERM)
@@ -20,7 +21,7 @@ func main() {
 	for {
 		select {
 		case <-cron:
-			backend.Process()
+			backend.Poll()
 		case <-kill:
 			return
 		}

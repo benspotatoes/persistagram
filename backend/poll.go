@@ -6,20 +6,7 @@ import (
 	"strings"
 )
 
-var (
-	attempts = []int{1, 2, 3}
-)
-
-const (
-	likedTxt   = "/liked.txt"
-	likedDelim = "\n"
-)
-
-func (b *backendImpl) Process() {
-	if !b.exists(likedTxt) {
-		return
-	}
-
+func (b *backendImpl) Poll() {
 	liked, err := b.get()
 	if err != nil {
 		log.Printf("Unable to get liked file: %s", err)
@@ -28,11 +15,9 @@ func (b *backendImpl) Process() {
 
 	parsed := b.parse(liked)
 	for _, data := range parsed {
-		go func(data *metadata) {
-			if err := b.save(data); err != nil {
-				log.Printf("Unable to save link %s: %s", data.path, err)
-			}
-		}(data)
+		if err := b.upload(data); err != nil {
+			log.Printf("Unable to save link %s: %s", data.path, err)
+		}
 	}
 
 	if err := b.clean(); err != nil {
@@ -41,7 +26,7 @@ func (b *backendImpl) Process() {
 }
 
 func (b *backendImpl) get() ([]string, error) {
-	data, err := b.db.Download(likedTxt)
+	data, err := b.db.Download(b.saveFile)
 	if err != nil {
 		return []string{}, err
 	}
@@ -49,9 +34,9 @@ func (b *backendImpl) get() ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	return strings.Split(string(raw), likedDelim), nil
+	return strings.Split(string(raw), "\n"), nil
 }
 
 func (b *backendImpl) clean() error {
-	return b.db.Delete(likedTxt)
+	return b.db.Delete(b.saveFile)
 }
