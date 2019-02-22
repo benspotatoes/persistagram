@@ -9,6 +9,7 @@ import (
 
 type Backend interface {
 	Process()
+	Save(link string)
 }
 
 type backendImpl struct {

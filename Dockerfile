@@ -7,5 +7,3 @@ COPY . $GOPATH/src/github.com/benspotatoes/persistagram/
 ENV DB_ACCESS_TOKEN=dropbox
 
 WORKDIR $GOPATH/src/github.com/benspotatoes/persistagram
-
-ENTRYPOINT ["go", "run", "main.go"]

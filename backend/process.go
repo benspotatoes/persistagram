@@ -22,7 +22,7 @@ func (b *backendImpl) Process() {
 
 	liked, err := b.get()
 	if err != nil {
-		log.Printf("unable to get liked file: %s", err)
+		log.Printf("Unable to get liked file: %s", err)
 		return
 	}
 
@@ -30,13 +30,13 @@ func (b *backendImpl) Process() {
 	for _, data := range parsed {
 		go func(data *metadata) {
 			if err := b.save(data); err != nil {
-				log.Printf("unable to save link %s: %s", data.path, err)
+				log.Printf("Unable to save link %s: %s", data.path, err)
 			}
 		}(data)
 	}
 
 	if err := b.clean(); err != nil {
-		log.Printf("unable to clean: %s", err)
+		log.Printf("Unable to clean: %s", err)
 	}
 }
 

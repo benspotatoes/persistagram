@@ -26,13 +26,13 @@ func (b *backendImpl) parse(liked []string) []*metadata {
 
 		page, err := readLink(link)
 		if err != nil {
-			log.Printf("unable to read link %s: %s\n", link, err)
+			log.Printf("Unable to read link %s: %s\n", link, err)
 			continue
 		}
 
 		data, err := instagram.Parse(page, false)
 		if err != nil {
-			log.Printf("unable to parse link %s: %s\n", link, err)
+			log.Printf("Unable to parse link %s: %s\n", link, err)
 			continue
 		}
 

@@ -47,8 +47,8 @@ type Node struct {
 var (
 	filenameRe = regexp.MustCompile(`\w+\.(mp4|jpg|png)`)
 
-	videoRe = regexp.MustCompile(`og:video:secure_url" content="(https:\/\/.*\.mp4)" `)
-	imageRe = regexp.MustCompile(`og:image" content="(https:\/\/.*\.jpg)`)
+	videoRe = regexp.MustCompile(`og:video:secure_url" content="(https:\/\/.*\.mp4.*)" `)
+	imageRe = regexp.MustCompile(`og:image" content="(https:\/\/.*\.jpg.*)"`)
 
 	contentRe  = regexp.MustCompile(`og:description" content=".* \(@(.*)\) on Instagram`)
 	content2Re = regexp.MustCompile(`og:description" content=".* @(.*) on Instagram`)
