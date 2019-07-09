@@ -5,7 +5,8 @@ RUN mkdir -p /opt/persistagram/data
 
 COPY . $GOPATH/src/github.com/benspotatoes/persistagram/
 
-ENV LIKED_FILE=/liked.txt
-ENV SAVE_DIRECTORY=/opt/persistagram/data
+ENV LIKED_FILE '/liked.txt'
+ENV SAVE_DIRECTORY '/opt/persistagram/data'
+ENV GCS_BUCKET ''
 
 WORKDIR $GOPATH/src/github.com/benspotatoes/persistagram

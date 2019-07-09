@@ -1,8 +1,11 @@
 package backend
 
 import (
+	"context"
+	"log"
 	"os"
 
+	"cloud.google.com/go/storage"
 	dropbox "github.com/tj/go-dropbox"
 	dropy "github.com/tj/go-dropy"
 )
@@ -14,6 +17,7 @@ type Backend interface {
 
 type backendImpl struct {
 	db        *dropy.Client
+	bucket    *storage.BucketHandle
 	likedFile string
 	saveDir   string
 }
@@ -32,5 +36,14 @@ func NewBackend() Backend {
 	if saveDir == "" {
 		saveDir = "/opt/persistagram/data"
 	}
-	return &backendImpl{db, likedFile, saveDir}
+	backend := &backendImpl{db, nil, likedFile, saveDir}
+	if name := os.Getenv("GCS_BUCKET"); name != "" {
+		gcs, err := storage.NewClient(context.Background())
+		if err != nil {
+			log.Fatalf("Unable to initialize Storage client %s", err)
+		}
+		bucket := gcs.Bucket(name)
+		backend.bucket = bucket
+	}
+	return backend
 }

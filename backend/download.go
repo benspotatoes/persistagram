@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -27,12 +28,23 @@ func (b *backendImpl) download(data *metadata) error {
 	}
 
 	author := data.safeAuthor()
+	filename := fmt.Sprintf("%s/%s", data.safeAuthor(), data.filename)
+
+	if b.bucket != nil {
+		obj := b.bucket.Object(filename)
+		w := obj.NewWriter(context.Background())
+		_, err := w.Write(body)
+		if err != nil {
+			return fmt.Errorf("error writing file: %s", err)
+		}
+		return w.Close()
+	}
+
 	saveDirectory := fmt.Sprintf("%s/%s", b.saveDir, author)
 	if err := os.MkdirAll(saveDirectory, os.ModePerm); err != nil {
 		return fmt.Errorf("error creating directory (%s): %s", author, err)
 	}
-
-	savePath := fmt.Sprintf("%s/%s/%s", b.saveDir, data.safeAuthor(), data.filename)
+	savePath := fmt.Sprintf("%s/%s", b.saveDir, filename)
 	if err := ioutil.WriteFile(savePath, body, os.ModePerm); err != nil {
 		return fmt.Errorf("error writing file: %s", err)
 	}
