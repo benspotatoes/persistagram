@@ -15,11 +15,9 @@ func (b *backendImpl) Poll() {
 
 	parsed := b.parse(liked)
 	for _, data := range parsed {
-		go func(md *metadata) {
-			if err := b.download(md); err != nil {
-				log.Printf("Unable to save link %s: %s", md.path, err)
-			}
-		}(data)
+		if err := b.download(data); err != nil {
+			log.Printf("Unable to save link %s: %s", data.path, err)
+		}
 	}
 
 	if err := b.clean(); err != nil {
