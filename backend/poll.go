@@ -3,13 +3,20 @@ package backend
 import (
 	"io/ioutil"
 	"log"
+	"regexp"
 	"strings"
+)
+
+var (
+	notFoundRe = regexp.MustCompile("not_found")
 )
 
 func (b *backendImpl) Poll() {
 	liked, err := b.get()
 	if err != nil {
-		log.Printf("Unable to get liked file: %s", err)
+		if !notFoundRe.MatchString(err.Error()) {
+			log.Printf("Unable to get liked file: %s", err)
+		}
 		return
 	}
 
