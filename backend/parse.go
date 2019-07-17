@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/benspotatoes/persistagram/internal/instagram"
+	"github.com/benspotatoes/persistagram/clients/instagram"
 )
 
 var (
