@@ -8,5 +8,6 @@ COPY . $GOPATH/src/github.com/benspotatoes/persistagram/
 ENV LIKED_FILE '/liked.txt'
 ENV SAVE_DIRECTORY '/opt/persistagram/data'
 ENV GCS_BUCKET ''
+ENV INTERVAL 4
 
 WORKDIR $GOPATH/src/github.com/benspotatoes/persistagram

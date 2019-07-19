@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -16,7 +17,14 @@ func main() {
 	kill := make(chan os.Signal, 1)
 	signal.Notify(kill, syscall.SIGINT, syscall.SIGTERM)
 
-	cron := time.NewTicker(4 * time.Hour).C
+	var interval int64
+	var err error
+	interval, err = strconv.ParseInt(os.Getenv("INTERVAL"), 10, 64)
+	if err != nil {
+		interval = 4
+	}
+
+	cron := time.NewTicker(time.Duration(interval) * time.Hour).C
 
 	for {
 		select {
