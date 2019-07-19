@@ -9,7 +9,7 @@ const (
 )
 
 func (b *backendImpl) Save(link string) {
-	parsed := b.parse([]string{link})
+	parsed, _ := b.parse([]string{link})
 	for _, data := range parsed {
 		log.Printf("Saving link %s (%s: %s)", data.path, data.author, data.filename)
 		if err := b.download(data); err != nil {

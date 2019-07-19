@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/benspotatoes/persistagram/internal/instagram"
+	"github.com/benspotatoes/persistagram/clients/instagram"
 )
 
 func main() {

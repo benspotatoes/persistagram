@@ -16,8 +16,9 @@ var (
 // parse takes a list of Instagram links and returns two lists: one list of
 // parsed Instagram metadata and one list of links that could not be parsed
 // successfully
-func (b *backendImpl) parse(liked []string) []*metadata {
+func (b *backendImpl) parse(liked []string) ([]*metadata, []string) {
 	var parsed []*metadata
+	var failed []string
 	for _, link := range liked {
 		// Skip empty links
 		if link == "" {
@@ -27,12 +28,14 @@ func (b *backendImpl) parse(liked []string) []*metadata {
 		page, err := readLink(link)
 		if err != nil {
 			log.Printf("Unable to read link %s: %s\n", link, err)
+			failed = append(failed, link)
 			continue
 		}
 
 		data, err := instagram.Parse(page, false)
 		if err != nil {
 			log.Printf("Unable to parse link %s: %s\n", link, err)
+			failed = append(failed, link)
 			continue
 		}
 
@@ -44,7 +47,7 @@ func (b *backendImpl) parse(liked []string) []*metadata {
 			})
 		}
 	}
-	return parsed
+	return parsed, failed
 }
 
 // readLink fetches the data for the specified link (retrying up to three

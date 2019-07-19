@@ -5,6 +5,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var (
@@ -20,11 +21,22 @@ func (b *backendImpl) Poll() {
 		return
 	}
 
-	parsed := b.parse(liked)
+	parsed, failed := b.parse(liked)
 	for _, data := range parsed {
 		if err := b.download(data); err != nil {
 			log.Printf("Unable to save link %s: %s", data.path, err)
 		}
+	}
+	if len(failed) > 0 {
+		go func() {
+			time.Sleep(10 * time.Second)
+			retryParsed, _ := b.parse(failed)
+			for _, data := range retryParsed {
+				if err := b.download(data); err != nil {
+					log.Printf("Unable to save link %s: %s", data.path, err)
+				}
+			}
+		}()
 	}
 
 	if err := b.clean(); err != nil {
